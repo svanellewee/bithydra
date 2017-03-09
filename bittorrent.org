@@ -1,0 +1,106 @@
+* Why
+  - Only use Legal torrents!
+    - Argument: You can transport stolen things with Cars as well, should we ban all Cars?
+  - Because it's interesting
+  - Because it's fun
+* Who uses it? 
+  - Ubuntu ?
+  
+* the rest
+Great source http://jonas.nitro.dk/bittorrent/bittorrent-rfc.html
+
+** A BitTorrent file distribution consists of these entities
+   - An ordinary web server
+   - A static 'metainfo' file
+   - A BitTorrent tracker
+   - An 'original' downloader
+   - The end user web browsers
+   - The end user downloaders
+
+** To start serving, a host goes through the following steps
+   - Start running a tracker
+   - Start running an ordinary web server
+     - associate the extension .torrent with mimetype application/x-bittorrent
+   - Generate a metainfo (.torrent) file using ***** SEE LATER 
+     - the URL of the tracker AND
+     - the complete file to be served.
+   - Put the metainfo file on the web server.
+   - Link to the metainfo (.torrent) file from some other web page.
+   - Start a downloader which already has the complete file (the 'origin').
+
+** To start downloading, a user does the following
+   - Install BitTorrent
+   - Surf the web.
+   - Click on a link to a .torrent file.
+   - Select where to save the file locally, or select a partial download to resume.
+   - Wait for download to complete.
+   - Tell downloader to exit (it keeps uploading until this happens).
+
+** What is a .torrent file:
+   - UTF-8 encoded file.
+   - AKA metainfo file
+     - bencoded dictionaries with the following keys:
+       - announce (The URL of the tracker.)
+       - info another dictionary
+	 - name (suggested name of file or directory)
+	 - piece length (power of 2 file part size)
+	 - pieces (not sure here) string with length a multiple of 20...huh?
+	 - length/files length->file in bytes files-> multi
+	 if "files" then list of dicts with "length" and "path" each.
+
+
+
+
+** A Peer 
+   Client software agent for user. 
+   Has a 20 byte peer_id string (must be unique)
+** Seeder
+   A Peer complete copy of document
+** Trackers
+   A tracker is a centralized server that holds information about one or more torrents and associated swarms. 
+   It functions as a gateway for peers into a swarm.
+   Tracker GET requests have the following keys:
+   - info_hash
+     - The 20 byte sha1 hash (escaped) of the bencoded form of the info value from the metainfo file. 
+     - Note that this is a substring of the metainfo file.
+     - The info-hash must be the hash of the encoded form as found in the .torrent file, 
+       regardless of it being invalid. 
+   - peer_id
+     - An escaped string of length 20 which this downloader uses as its id.
+   - ip
+     - An optional parameter giving the IP (or dns name) which this peer is at. 
+       Generally used for the origin if it's on the same machine as the tracker.
+   - port
+     - The port number this peer is listening on. 
+       Common behavior is for a downloader to try to listen on port 6881 
+       and if that port is taken try 6882, then 6883, etc. and give up after 6889.
+   - uploaded
+     - The total amount uploaded so far, encoded in base ten ascii.
+   - downloaded
+     - The total amount downloaded so far, encoded in base ten ascii.
+   - left
+     - The number of bytes this peer still has to download, encoded in base ten ascii. Note that this can't be computed from downloaded and the file length since it might be a resume, and there's a chance that some of the downloaded data failed an integrity check and had to be re-downloaded.
+   - event
+     (optional key) which maps to started, completed, or stopped (or empty, which is the same as not being present). If not present, this is one of the announcements done at regular intervals. An announcement using started is sent when a download first begins, and one using completed is sent when the download is complete. 
+     No completed is sent if the file was complete when started. 
+     Downloaders send an announcement using stopped when they cease downloading.
+   - failure (potential)
+** Swarm
+   Network of peers per torrent.
+
+* BTP
+** Overview
+   2 Parts, for init/status updates(THP) and actual download (PWP)
+   - Tracker HTTP (THP)
+     - Peer asks Tracker to join SWARM
+     - Progress updates
+   - Peer Wire Protocol (PWP)
+     - Actual downloads.
+** The publisher       
+   - Set up tracker + .torrent file
+   - Have one seeder of .torrent file (A seeder == peer with full file)
+** The downloader
+   - Grab the metainfo.torrent file
+   - use .torrent to get updates to trackers
+     - trackers then responds with info about peers
+   - peers do download using PWP
