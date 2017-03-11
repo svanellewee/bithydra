@@ -18,7 +18,7 @@ with open('ubuntu.torrent', 'r') as data:
 #+RESULTS:
 
 
-#+BEGIN_SRC python :python ../venv/bin/python :results output
+#+BEGIN_SRC python :python ./venv/bin/python  :results output
 import sys
 print(sys.version)
 print("BLA")
@@ -34,7 +34,7 @@ with open('ubuntu.torrent', 'rb') as data:
 
 #+RESULTS:
 #+begin_example
-3.5.0 (v3.5.0:374f501f4567, Sep 12 2015, 11:00:19) 
+3.6.0 (v3.6.0:41df79263a11, Dec 22 2016, 17:23:13) 
 [GCC 4.2.1 (Apple Inc. build 5666) (dot 3)]
 BLA
 {b'announce': b'http://torrent.ubuntu.com:6969/announce',
@@ -1606,4 +1606,5 @@ BLA
                       b'\x94W\xe5\xc5\r\xe7\xbajO\xa9\r\xce\x944\xff\xce'
                       b'\xf5}M\xdc\xcdx\x15\x1c\xffiW3'}}
 #+end_example
+
 
