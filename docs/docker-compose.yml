@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  hackbox:
+    image: ubuntu:16.04
+    volumes:
+      - hackvolume:/mnt/hackvolume
+
+volumes:
+  hackvolume:

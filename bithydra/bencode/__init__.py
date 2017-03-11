@@ -122,7 +122,10 @@ def encode_dict(x,r):
     r.append(b'd')
     ilist = x.items()
     for k, v in ilist:
-        r.extend((str(len(k)).encode('utf-8'), b':', k.encode('utf-8')))
+        new_k = k
+        if isinstance(k, str):
+            new_k = k.encode('utf-8')
+        r.extend((str(len(k)).encode('utf-8'), b':', new_k))
         encode_func[type(v)](v, r)
     r.append(b'e')
 
