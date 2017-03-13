@@ -19,17 +19,29 @@ with open('ubuntu.torrent', 'r') as data:
 
 
 #+BEGIN_SRC python :python ./venv/bin/python  :results output
-import sys
-print(sys.version)
-print("BLA")
-from bithydra.bencode import bencode, bdecode
-import pprint
-
-with open('ubuntu.torrent', 'rb') as data:
-   result = bdecode(data.read())
-   pprint.pprint(result)  # nope
-   with open('output.torrent', 'wb') as output:
-      output.write(bencode(result))
+  import sys
+  print(sys.version)
+  print("BLA")
+  from bithydra.bencode import bencode, bdecode
+  import pprint
+  import functools
+  def split_20(pieces):
+      batch = []
+      for index, byte in enumerate(pieces):
+         batch.append(byte)
+         if index % 20 == 0:
+            yield batch
+      yield batch
+  with open('ubuntu.torrent', 'rb') as data:
+     result = bdecode(data.read())
+     pprint.pprint(result)  # nope
+     with open('output.torrent', 'wb') as output:
+        output.write(bencode(result))
+  pieces = result[b'info'][b'pieces']
+  print("->>", len(pieces))
+  print(type(pieces))
+  for i in split_20(pieces):
+     print(i)
 #+END_SRC
 
 #+RESULTS:
@@ -1605,6 +1617,8 @@ BLA
                       b'\x93 \xcf\x16I\xf4/\xe0\x97\x0f!q\xfamU\x15'
                       b'\x94W\xe5\xc5\r\xe7\xbajO\xa9\r\xce\x944\xff\xce'
                       b'\xf5}M\xdc\xcdx\x15\x1c\xffiW3'}}
+<>> 26720
+<class 'bytes'>
 #+end_example
 
 

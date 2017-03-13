@@ -45,6 +45,11 @@ Great source http://jonas.nitro.dk/bittorrent/bittorrent-rfc.html
 	 - name (suggested name of file or directory)
 	 - piece length (power of 2 file part size)
 	 - pieces (not sure here) string with length a multiple of 20...huh?
+	   'pieces':
+            This is a string value containing the concatenation of the 20-byte SHA1 hash value 
+            for all pieces in the torrent. 
+            For example, the first 20 bytes of the string represent the SHA1 value 
+            used to verify piece index 0.
 	 - length/files length->file in bytes files-> multi
 	 if "files" then list of dicts with "length" and "path" each.
 
